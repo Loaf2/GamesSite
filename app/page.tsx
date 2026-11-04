@@ -1,69 +1,129 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useRef, useState, type ComponentProps } from "react";
+import JSZip from "jszip";
+import { loadGame, saveGame, type StoredFile } from "./gameStorage";
+
+type FolderInputProps = ComponentProps<"input"> & {
+  webkitdirectory: string;
+};
+
+const folderInputProps: FolderInputProps = {
+  type: "file",
+  multiple: true,
+  webkitdirectory: "",
+};
 
 export default function Home() {
+  const folderInput = useRef<HTMLInputElement>(null);
+  const [selectedGame, setSelectedGame] = useState("");
+  const [gameFiles, setGameFiles] = useState<StoredFile[]>([]);
+  const exeName = gameFiles
+    .find((file) => file.path.toLowerCase().endsWith(".exe"))
+    ?.path.split("/")
+    .pop();
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadError, setDownloadError] = useState("");
+
+  useEffect(() => {
+    let cancelled = false;
+    loadGame()
+      .then((files) => {
+        if (cancelled || files.length === 0) return;
+        setGameFiles(files);
+        setSelectedGame(files[0].path.split("/")[0]);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  async function handleFolderChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const files: StoredFile[] = Array.from(event.currentTarget.files ?? []).map(
+      (file) => ({ path: file.webkitRelativePath, blob: file }),
+    );
+    setGameFiles(files);
+    setSelectedGame(files[0]?.path.split("/")[0] ?? "");
+    setDownloadError("");
+    try {
+      await saveGame(files);
+    } catch {
+      setDownloadError("The folder could not be saved for your next visit.");
+    }
+  }
+
+  async function handleDownload() {
+    if (gameFiles.length === 0) return;
+
+    setIsDownloading(true);
+    setDownloadError("");
+
+    try {
+      const zip = new JSZip();
+      gameFiles.forEach((file) => zip.file(file.path, file.blob));
+      const archive = await zip.generateAsync({ type: "blob" });
+      const url = URL.createObjectURL(archive);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${selectedGame}.zip`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch (error) {
+      setDownloadError(
+        error instanceof Error ? error.message : "The game ZIP could not be created.",
+      );
+    } finally {
+      setIsDownloading(false);
+    }
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <main className="flex min-h-screen flex-col items-center justify-center gap-4 bg-zinc-50 px-6 font-sans dark:bg-black">
+      <input
+        {...folderInputProps}
+        ref={folderInput}
+        className="sr-only"
+        onChange={handleFolderChange}
+        aria-label="Choose a game folder"
+      />
+      <button
+        type="button"
+        onClick={() => folderInput.current?.click()}
+        className="rounded-lg bg-zinc-900 px-6 py-3 font-medium text-white transition-colors hover:bg-zinc-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 dark:bg-zinc-100 dark:text-black dark:hover:bg-zinc-300"
+      >
+        Upload a game folder
+      </button>
+      {selectedGame && (
+        <p className="text-sm text-zinc-600 dark:text-zinc-400">
+          Selected: {selectedGame} ({gameFiles.length} files)
+        </p>
+      )}
+      {exeName && (
+        <span className="text-sm text-zinc-600 dark:text-zinc-400">{exeName}</span>
+      )}
+      <button
+        type="button"
+        onClick={handleDownload}
+        disabled={gameFiles.length === 0 || isDownloading}
+        className="rounded-lg border border-zinc-300 px-6 py-3 font-medium text-zinc-900 transition-colors hover:bg-zinc-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:text-zinc-100 dark:hover:bg-zinc-900"
+      >
+        {isDownloading ? "Preparing download..." : "Download game"}
+      </button>
+      <a
+        href="/api/download-game"
+        download="Game.zip"
+        className="rounded-lg bg-zinc-900 px-6 py-3 font-medium text-white transition-colors hover:bg-zinc-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 dark:bg-zinc-100 dark:text-black dark:hover:bg-zinc-300"
+      >
+        Download game from site
+      </a>
+      {downloadError && (
+        <p role="alert" className="text-sm text-red-600">
+          Could not download the game: {downloadError}
+        </p>
+      )}
+    </main>
   );
 }
