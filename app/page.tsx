@@ -15,7 +15,7 @@ export default async function Home({
   return (
     <>
       <main className="relative z-10 flex min-h-screen items-center justify-center px-6 py-12 text-zinc-100">
-        <section className="w-full max-w-lg rounded-3xl border border-zinc-800/80 bg-zinc-900/90 p-8 shadow-2xl backdrop-blur-sm sm:p-10">
+        <section className="w-full max-w-lg rounded-3xl border border-zinc-800/80 bg-zinc-900/90 p-6 shadow-2xl backdrop-blur-sm sm:p-10">
           <p className="mb-3 text-sm font-medium uppercase tracking-[0.2em] text-cyan-400">
             Aim Trainer
           </p>
