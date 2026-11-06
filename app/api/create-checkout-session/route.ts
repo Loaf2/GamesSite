@@ -16,12 +16,15 @@ export async function POST(request: Request) {
     const origin = new URL(request.url).origin;
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
-      managed_payments: { enabled: false },
+      managed_payments: { enabled: true },
       line_items: [
         {
           price_data: {
             currency: "eur",
-            product_data: { name: "Aim Trainer" },
+            product_data: {
+              name: "Aim Trainer",
+              tax_code: "txcd_10201000",
+            },
             unit_amount: GAME_PRICE_CENTS,
           },
           quantity: 1,
