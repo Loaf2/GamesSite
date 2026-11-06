@@ -1,129 +1,37 @@
-"use client";
+import PurchaseButton from "./purchase-button";
 
-// import { useEffect, useRef, useState, type ComponentProps } from "react";
-// import JSZip from "jszip";
-// import { loadGame, saveGame, type StoredFile } from "./gameStorage";
+const PRICE = "€15.00";
 
-// type FolderInputProps = ComponentProps<"input"> & {
-//   webkitdirectory: string;
-// };
+export const instant = false;
 
-// const folderInputProps: FolderInputProps = {
-//   type: "file",
-//   multiple: true,
-//   webkitdirectory: "",
-// };
-
-export default function Home() {
-  // const folderInput = useRef<HTMLInputElement>(null);
-  // const [selectedGame, setSelectedGame] = useState("");
-  // const [gameFiles, setGameFiles] = useState<StoredFile[]>([]);
-  // const exeName = gameFiles
-  //   .find((file) => file.path.toLowerCase().endsWith(".exe"))
-  //   ?.path.split("/")
-  //   .pop();
-  // const [isDownloading, setIsDownloading] = useState(false);
-  // const [downloadError, setDownloadError] = useState("");
-
-  // useEffect(() => {
-  //   let cancelled = false;
-  //   loadGame()
-  //     .then((files) => {
-  //       if (cancelled || files.length === 0) return;
-  //       setGameFiles(files);
-  //       setSelectedGame(files[0].path.split("/")[0]);
-  //     })
-  //     .catch(() => {});
-  //   return () => {
-  //     cancelled = true;
-  //   };
-  // }, []);
-
-  // async function handleFolderChange(event: React.ChangeEvent<HTMLInputElement>) {
-  //   const files: StoredFile[] = Array.from(event.currentTarget.files ?? []).map(
-  //     (file) => ({ path: file.webkitRelativePath, blob: file }),
-  //   );
-  //   setGameFiles(files);
-  //   setSelectedGame(files[0]?.path.split("/")[0] ?? "");
-  //   setDownloadError("");
-  //   try {
-  //     await saveGame(files);
-  //   } catch {
-  //     setDownloadError("The folder could not be saved for your next visit.");
-  //   }
-  // }
-
-  // async function handleDownload() {
-  //   if (gameFiles.length === 0) return;
-  //
-  //   setIsDownloading(true);
-  //   setDownloadError("");
-  //
-  //   try {
-  //     const zip = new JSZip();
-  //     gameFiles.forEach((file) => zip.file(file.path, file.blob));
-  //     const archive = await zip.generateAsync({ type: "blob" });
-  //     const url = URL.createObjectURL(archive);
-  //     const link = document.createElement("a");
-  //     link.href = url;
-  //     link.download = `${selectedGame}.zip`;
-  //     document.body.appendChild(link);
-  //     link.click();
-  //     link.remove();
-  //     window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-  //   } catch (error) {
-  //     setDownloadError(
-  //       error instanceof Error ? error.message : "The game ZIP could not be created.",
-  //     );
-  //   } finally {
-  //     setIsDownloading(false);
-  //   }
-  // }
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ session_id?: string }>;
+}) {
+  const { session_id: sessionId } = await searchParams;
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-4 bg-zinc-50 px-6 font-sans dark:bg-black">
-      {/* <input
-        {...folderInputProps}
-        ref={folderInput}
-        className="sr-only"
-        onChange={handleFolderChange}
-        aria-label="Choose a game folder"
-      />
-      <button
-        type="button"
-        onClick={() => folderInput.current?.click()}
-        className="rounded-lg bg-zinc-900 px-6 py-3 font-medium text-white transition-colors hover:bg-zinc-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 dark:bg-zinc-100 dark:text-black dark:hover:bg-zinc-300"
-      >
-        Upload a game folder
-      </button> */}
-      {/* {selectedGame && (
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
-          Selected: {selectedGame} ({gameFiles.length} files)
+    <main className="flex min-h-screen items-center justify-center bg-zinc-950 px-6 py-12 text-zinc-100">
+      <section className="w-full max-w-lg rounded-3xl border border-zinc-800 bg-zinc-900 p-8 shadow-2xl sm:p-10">
+        <p className="mb-3 text-sm font-medium uppercase tracking-[0.2em] text-cyan-400">
+          Aim Trainer
         </p>
-      )}
-      {exeName && (
-        <span className="text-sm text-zinc-600 dark:text-zinc-400">{exeName}</span>
-      )}
-      <button
-        type="button"
-        onClick={handleDownload}
-        disabled={gameFiles.length === 0 || isDownloading}
-        className="rounded-lg border border-zinc-300 px-6 py-3 font-medium text-zinc-900 transition-colors hover:bg-zinc-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:text-zinc-100 dark:hover:bg-zinc-900"
-      >
-        {isDownloading ? "Preparing download..." : "Download game"}
-      </button> */}
-      <a
-        href="/Aim%20Trainer.exe"
-        download="Aim Trainer.exe"
-        className="rounded-lg bg-zinc-900 px-6 py-3 font-medium text-white transition-colors hover:bg-zinc-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 dark:bg-zinc-100 dark:text-black dark:hover:bg-zinc-300"
-      >
-        Download aim trainer
-      </a>
-      {/* {downloadError && (
-        <p role="alert" className="text-sm text-red-600">
-          Could not download the game: {downloadError}
+        <h1 className="text-4xl font-semibold tracking-tight">
+          Sharpen your aim.
+        </h1>
+        <p className="mt-4 leading-7 text-zinc-400">
+          Buy the desktop Aim Trainer once, then download your copy securely
+          after Stripe confirms payment.
         </p>
-      )} */}
+
+        <div className="my-8 flex items-center justify-between border-y border-zinc-800 py-5">
+          <span className="text-zinc-300">Full game</span>
+          <span className="text-2xl font-semibold">{PRICE}</span>
+        </div>
+
+        <PurchaseButton sessionId={sessionId} price={PRICE} />
+      </section>
     </main>
   );
 }

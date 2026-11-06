@@ -16,6 +16,19 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Stripe checkout
+
+Create a `.env.local` file with your Stripe secret key before starting the app:
+
+```env
+STRIPE_SECRET_KEY=sk_test_...
+```
+
+The Aim Trainer is sold through Stripe Checkout for €15.00. The executable is
+kept outside `public` and is only served after the download route verifies that
+the Checkout Session is paid. Use Stripe test mode and test card
+`4242 4242 4242 4242` while developing.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
