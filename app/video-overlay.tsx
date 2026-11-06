@@ -17,7 +17,7 @@ export default function VideoOverlay() {
       <div className="relative w-full max-w-5xl">
         <video
           className="max-h-[85vh] w-full rounded-2xl object-contain shadow-2xl"
-          src="/aimtraining.mp4"
+          src="/AimTraining.mp4"
           autoPlay
           muted
           playsInline
