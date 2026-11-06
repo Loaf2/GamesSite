@@ -42,7 +42,7 @@ export function SignInForm() {
       <OAuthButtons />
       <p className="mt-6 text-center text-sm text-zinc-400">
         New here?{" "}
-        <Link className="text-cyan-300 hover:text-cyan-200" href="/signup">
+        <Link className="cursor-pointer text-cyan-300 hover:text-cyan-200" href="/signup">
           Create an account
         </Link>
       </p>
@@ -106,7 +106,7 @@ export function SignUpForm() {
       <OAuthButtons />
       <p className="mt-6 text-center text-sm text-zinc-400">
         Already have an account?{" "}
-        <Link className="text-cyan-300 hover:text-cyan-200" href="/signin">
+        <Link className="cursor-pointer text-cyan-300 hover:text-cyan-200" href="/signin">
           Sign in
         </Link>
       </p>
@@ -166,9 +166,22 @@ function AuthCard({
   children: React.ReactNode;
 }) {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-zinc-950 px-6 py-24 text-zinc-100">
-      <section className="w-full max-w-md rounded-3xl border border-zinc-800 bg-zinc-900 p-6 shadow-2xl sm:p-8">
-        <h1 className="text-3xl font-semibold">{title}</h1>
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-zinc-950 px-6 py-24 text-zinc-100">
+      <div className="pointer-events-none absolute -left-32 -top-32 h-96 w-96 rounded-full bg-cyan-500/10 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-40 -right-32 h-[28rem] w-[28rem] rounded-full bg-blue-500/10 blur-3xl" />
+      <section className="relative w-full max-w-md rounded-3xl border border-zinc-800/80 bg-zinc-900/90 p-6 shadow-2xl backdrop-blur-xl sm:p-8">
+        <Link
+          className="mb-8 inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-cyan-300 transition-colors hover:text-cyan-200"
+          href="/"
+        >
+          <span aria-hidden="true">←</span> Back to Aim Trainer
+        </Link>
+        <div className="mb-8">
+          <p className="text-sm font-medium uppercase tracking-[0.2em] text-cyan-400">
+            Aim Trainer
+          </p>
+          <h1 className="mt-3 text-3xl font-semibold">{title}</h1>
+        </div>
         <p className="mt-2 text-zinc-400">{subtitle}</p>
         <div className="mt-8">{children}</div>
       </section>

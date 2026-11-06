@@ -24,3 +24,74 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.auth-button {
+  width: 100%;
+  cursor: pointer;
+  border-radius: 0.75rem;
+  background: #22d3ee;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  color: #09090b;
+  transition: background-color 150ms ease;
+}
+
+.auth-button:hover {
+  background: #67e8f9;
+}
+
+.auth-button:focus-visible,
+.auth-social-button:focus-visible {
+  outline: 2px solid #22d3ee;
+  outline-offset: 2px;
+}
+
+.auth-button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.auth-social-button {
+  cursor: pointer;
+  border: 1px solid #3f3f46;
+  border-radius: 0.75rem;
+  background: rgb(9 9 11 / 60%);
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #e4e4e7;
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease;
+}
+
+.auth-social-button:hover {
+  border-color: #71717a;
+  background: #27272a;
+}
+
+.auth-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #d4d4d8;
+}
+
+.auth-input {
+  border: 1px solid #3f3f46;
+  border-radius: 0.75rem;
+  background: rgb(9 9 11 / 70%);
+  padding: 0.75rem 1rem;
+  color: #f4f4f5;
+  outline: none;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.auth-input:focus {
+  border-color: #22d3ee;
+  box-shadow: 0 0 0 3px rgb(34 211 238 / 20%);
+}

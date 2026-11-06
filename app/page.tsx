@@ -39,7 +39,7 @@ export default async function Home({
                 the desktop Aim Trainer.
               </p>
               <a
-                className="mt-8 inline-block rounded-xl bg-cyan-400 px-6 py-3 font-semibold text-zinc-950 transition-colors hover:bg-cyan-300"
+                className="mt-8 inline-block cursor-pointer rounded-xl bg-cyan-400 px-6 py-3 font-semibold text-zinc-950 transition-colors hover:bg-cyan-300"
                 href="#checkout"
               >
                 Continue to checkout

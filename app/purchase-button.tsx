@@ -44,7 +44,7 @@ export default function PurchaseButton({
       {sessionId && isAuthenticated ? (
         <a
           href={`/api/download?session_id=${encodeURIComponent(sessionId)}`}
-          className="block rounded-xl bg-cyan-400 px-6 py-3 text-center font-semibold text-zinc-950 transition-colors hover:bg-cyan-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400"
+          className="block cursor-pointer rounded-xl bg-cyan-400 px-6 py-3 text-center font-semibold text-zinc-950 transition-colors hover:bg-cyan-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400"
         >
           Download Aim Trainer
         </a>
@@ -53,14 +53,14 @@ export default function PurchaseButton({
           type="button"
           onClick={handlePurchase}
           disabled={isStartingCheckout}
-          className="w-full rounded-xl bg-cyan-400 px-6 py-3 font-semibold text-zinc-950 transition-colors hover:bg-cyan-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400 disabled:cursor-wait disabled:opacity-60"
+          className="w-full cursor-pointer rounded-xl bg-cyan-400 px-6 py-3 font-semibold text-zinc-950 transition-colors hover:bg-cyan-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400 disabled:cursor-wait disabled:opacity-60"
         >
           {isStartingCheckout ? "Opening secure checkout..." : `Buy for ${price}`}
         </button>
       ) : (
         <a
           href="/signin?callbackUrl=%2F%23checkout"
-          className="block rounded-xl bg-cyan-400 px-6 py-3 text-center font-semibold text-zinc-950 transition-colors hover:bg-cyan-300"
+          className="block cursor-pointer rounded-xl bg-cyan-400 px-6 py-3 text-center font-semibold text-zinc-950 transition-colors hover:bg-cyan-300"
         >
           Sign in to buy
         </a>

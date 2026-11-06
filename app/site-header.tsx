@@ -11,15 +11,15 @@ export default function SiteHeader() {
       <nav className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
         <Link
           href="/"
-          className="font-semibold tracking-tight text-white"
+          className="cursor-pointer font-semibold tracking-tight text-white"
         >
           Aim Trainer
         </Link>
         <div className="flex items-center gap-3 text-sm text-zinc-300 sm:gap-6">
-          <a className="hidden transition-colors hover:text-white sm:inline" href="#preview">
+          <a className="hidden cursor-pointer transition-colors hover:text-white sm:inline" href="#preview">
             Preview
           </a>
-          <a className="transition-colors hover:text-white" href="#checkout">
+          <a className="cursor-pointer transition-colors hover:text-white" href="#checkout">
             Checkout
           </a>
           {status === "loading" ? (
@@ -32,7 +32,7 @@ export default function SiteHeader() {
               <button
                 type="button"
                 onClick={() => signOut({ callbackUrl: "/" })}
-                className="rounded-lg border border-zinc-700 px-3 py-2 transition-colors hover:border-zinc-500 hover:text-white"
+                className="cursor-pointer rounded-lg border border-zinc-700 px-3 py-2 transition-colors hover:border-zinc-500 hover:text-white"
               >
                 Sign out
               </button>
@@ -40,7 +40,7 @@ export default function SiteHeader() {
           ) : (
             <Link
               href="/signin"
-              className="rounded-lg border border-cyan-400 px-3 py-2 text-cyan-300 transition-colors hover:bg-cyan-400 hover:text-zinc-950"
+              className="cursor-pointer rounded-lg border border-cyan-400 px-3 py-2 text-cyan-300 transition-colors hover:bg-cyan-400 hover:text-zinc-950"
             >
               Sign in
             </Link>
