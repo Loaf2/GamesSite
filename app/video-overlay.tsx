@@ -5,7 +5,7 @@ export default function VideoOverlay() {
       className="pointer-events-none absolute inset-0 z-0 overflow-hidden bg-black"
     >
       <video
-        className="h-[100svh] w-screen object-cover object-center sm:h-full sm:w-full"
+        className="h-svh w-screen object-cover object-center sm:h-full sm:w-full"
         src="/AimTraining.mp4"
         autoPlay
         muted
