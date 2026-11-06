@@ -3,9 +3,11 @@
 import { useState } from "react";
 
 export default function PurchaseButton({
+  isAuthenticated,
   sessionId,
   price,
 }: {
+  isAuthenticated: boolean;
   sessionId?: string;
   price: string;
 }) {
@@ -39,14 +41,14 @@ export default function PurchaseButton({
 
   return (
     <>
-      {sessionId ? (
+      {sessionId && isAuthenticated ? (
         <a
           href={`/api/download?session_id=${encodeURIComponent(sessionId)}`}
           className="block rounded-xl bg-cyan-400 px-6 py-3 text-center font-semibold text-zinc-950 transition-colors hover:bg-cyan-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400"
         >
           Download Aim Trainer
         </a>
-      ) : (
+      ) : isAuthenticated ? (
         <button
           type="button"
           onClick={handlePurchase}
@@ -55,9 +57,16 @@ export default function PurchaseButton({
         >
           {isStartingCheckout ? "Opening secure checkout..." : `Buy for ${price}`}
         </button>
+      ) : (
+        <a
+          href="/signin?callbackUrl=%2F%23checkout"
+          className="block rounded-xl bg-cyan-400 px-6 py-3 text-center font-semibold text-zinc-950 transition-colors hover:bg-cyan-300"
+        >
+          Sign in to buy
+        </a>
       )}
 
-      {sessionId && (
+      {sessionId && isAuthenticated && (
         <p className="mt-4 text-sm text-emerald-400">
           Payment confirmed. Your download is ready.
         </p>

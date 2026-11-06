@@ -2,7 +2,7 @@ export default function VideoOverlay() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-black"
+      className="pointer-events-none absolute inset-0 z-0 overflow-hidden bg-black"
     >
       <video
         className="h-[100svh] w-screen object-cover object-center sm:h-full sm:w-full"

@@ -29,6 +29,15 @@ kept outside `public` and is only served after the download route verifies that
 the Checkout Session is paid. Use Stripe test mode and test card
 `4242 4242 4242 4242` while developing.
 
+## Authentication
+
+Copy `.env.example` to `.env.local` and fill in the Neon, Auth.js, Google, and
+GitHub values. Create a Neon Postgres database and use its connection string
+as `DATABASE_URL`. Set OAuth callback URLs to
+`https://your-domain.com/api/auth/callback/google` and
+`https://your-domain.com/api/auth/callback/github` (and the equivalent local
+`http://localhost:3000` URLs).
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.

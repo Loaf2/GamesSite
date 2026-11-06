@@ -1,11 +1,17 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import Stripe from "stripe";
+import { auth } from "@/auth";
 
 const GAME_PRICE_CENTS = 1500;
 const GAME_FILE_NAME = "Aim Trainer.exe";
 
 export async function GET(request: Request) {
+  const session = await auth();
+  if (!session?.user) {
+    return Response.json({ error: "Sign in before downloading." }, { status: 401 });
+  }
+
   const sessionId = new URL(request.url).searchParams.get("session_id");
   const secretKey = process.env.STRIPE_SECRET_KEY;
 

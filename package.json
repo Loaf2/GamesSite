@@ -9,8 +9,11 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.2.0",
+    "bcryptjs": "^3.0.3",
     "jszip": "^3.10.2",
     "next": "16.4.5",
+    "next-auth": "^5.0.0-beta.32",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "stripe": "^23.1.0"

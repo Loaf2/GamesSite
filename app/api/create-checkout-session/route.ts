@@ -1,8 +1,14 @@
 import Stripe from "stripe";
+import { auth } from "@/auth";
 
 const GAME_PRICE_CENTS = 1500;
 
 export async function POST(request: Request) {
+  const session = await auth();
+  if (!session?.user) {
+    return Response.json({ error: "Sign in before checkout." }, { status: 401 });
+  }
+
   const secretKey = process.env.STRIPE_SECRET_KEY;
   if (!secretKey) {
     return Response.json(

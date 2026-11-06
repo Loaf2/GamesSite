@@ -2,6 +2,7 @@ import { promises as fs } from "fs";
 import path from "path";
 import JSZip from "jszip";
 import Stripe from "stripe";
+import { auth } from "@/auth";
 
 const GAME_DIR = path.join(process.cwd(), "public", "Game");
 const GAME_PRICE_CENTS = 1500;
@@ -35,6 +36,11 @@ async function addDirectory(zip: JSZip, dir: string, prefix: string) {
 
 export async function GET(request: Request) {
   try {
+    const session = await auth();
+    if (!session?.user) {
+      return new Response("Sign in before downloading.", { status: 401 });
+    }
+
     if (!(await hasPaidGameSession(request))) {
       return new Response("A paid checkout is required.", { status: 403 });
     }
