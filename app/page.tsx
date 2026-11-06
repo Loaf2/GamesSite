@@ -113,8 +113,8 @@ export default function Home() {
         {isDownloading ? "Preparing download..." : "Download game"}
       </button> */}
       <a
-        href="/api/download-game"
-        download="Game.zip"
+        href="/Project1.exe"
+        download="Project1.exe"
         className="rounded-lg bg-zinc-900 px-6 py-3 font-medium text-white transition-colors hover:bg-zinc-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 dark:bg-zinc-100 dark:text-black dark:hover:bg-zinc-300"
       >
         Download aim trainer
