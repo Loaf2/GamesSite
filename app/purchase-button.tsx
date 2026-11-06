@@ -41,34 +41,51 @@ export default function PurchaseButton({
 
   return (
     <>
-      {sessionId && isAuthenticated ? (
-        <a
-          href={`/api/download?session_id=${encodeURIComponent(sessionId)}`}
-          className="block cursor-pointer rounded-xl bg-cyan-400 px-6 py-3 text-center font-semibold text-zinc-950 transition-colors hover:bg-cyan-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400"
-        >
-          Download Aim Trainer
-        </a>
-      ) : isAuthenticated ? (
+      <p className="mb-3 text-sm font-medium text-zinc-400">Choose your platform</p>
+      <div className="grid gap-3 sm:grid-cols-3">
+        {sessionId && isAuthenticated ? (
+          <a
+            href={`/api/download?session_id=${encodeURIComponent(sessionId)}`}
+            className="block cursor-pointer rounded-xl bg-cyan-400 px-4 py-3 text-center text-sm font-semibold text-zinc-950 transition-colors hover:bg-cyan-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400"
+          >
+            Windows
+          </a>
+        ) : isAuthenticated ? (
+          <button
+            type="button"
+            onClick={handlePurchase}
+            disabled={isStartingCheckout}
+            className="w-full cursor-pointer rounded-xl bg-cyan-400 px-4 py-3 text-sm font-semibold text-zinc-950 transition-colors hover:bg-cyan-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400 disabled:cursor-wait disabled:opacity-60"
+          >
+            {isStartingCheckout ? "Opening..." : `Buy for ${price}`}
+          </button>
+        ) : (
+          <a
+            href="/signin?callbackUrl=%2F%23checkout"
+            className="block cursor-pointer rounded-xl bg-cyan-400 px-4 py-3 text-center text-sm font-semibold text-zinc-950 transition-colors hover:bg-cyan-300"
+          >
+            Sign in to buy
+          </a>
+        )}
         <button
           type="button"
-          onClick={handlePurchase}
-          disabled={isStartingCheckout}
-          className="w-full cursor-pointer rounded-xl bg-cyan-400 px-6 py-3 font-semibold text-zinc-950 transition-colors hover:bg-cyan-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400 disabled:cursor-wait disabled:opacity-60"
+          disabled
+          className="cursor-not-allowed rounded-xl border border-zinc-700 bg-zinc-800/60 px-4 py-3 text-sm font-medium text-zinc-500"
         >
-          {isStartingCheckout ? "Opening secure checkout..." : `Buy for ${price}`}
+          macOS · Coming soon
         </button>
-      ) : (
-        <a
-          href="/signin?callbackUrl=%2F%23checkout"
-          className="block cursor-pointer rounded-xl bg-cyan-400 px-6 py-3 text-center font-semibold text-zinc-950 transition-colors hover:bg-cyan-300"
+        <button
+          type="button"
+          disabled
+          className="cursor-not-allowed rounded-xl border border-zinc-700 bg-zinc-800/60 px-4 py-3 text-sm font-medium text-zinc-500"
         >
-          Sign in to buy
-        </a>
-      )}
+          Linux · Coming soon
+        </button>
+      </div>
 
       {sessionId && isAuthenticated && (
         <p className="mt-4 text-sm text-emerald-400">
-          Payment confirmed. Your download is ready.
+          Payment confirmed. Your Windows download is ready.
         </p>
       )}
       {error && (
