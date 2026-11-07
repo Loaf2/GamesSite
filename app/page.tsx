@@ -2,6 +2,7 @@ import PurchaseButton from "./purchase-button";
 import SiteHeader from "./site-header";
 import VideoOverlay from "./video-overlay";
 import { auth } from "@/auth";
+import { connection } from "next/server";
 
 const PRICE = "€15.00";
 
@@ -12,6 +13,8 @@ export default async function Home({
 }: {
   searchParams: Promise<{ session_id?: string }>;
 }) {
+  await connection();
+
   const [{ session_id: sessionId }, session] = await Promise.all([
     searchParams,
     auth(),
@@ -22,7 +25,7 @@ export default async function Home({
       <SiteHeader />
       <main className="relative z-10 text-zinc-100">
         <section
-          className="relative flex min-h-[100svh] items-end overflow-hidden px-6 pb-16 pt-28 sm:items-center sm:pb-12"
+          className="relative flex min-h-svh items-end overflow-hidden px-6 pb-16 pt-28 sm:items-center sm:pb-12"
           id="preview"
         >
           <VideoOverlay />

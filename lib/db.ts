@@ -7,7 +7,7 @@ export type UserRecord = {
   image: string | null;
 };
 
-function getDatabase() {
+export function getDatabase() {
   const connectionString = process.env.DATABASE_URL;
   if (!connectionString) {
     throw new Error("DATABASE_URL is not configured.");
@@ -28,6 +28,14 @@ export async function ensureUsersTable() {
     )
   `;
   await sql`
+    CREATE TABLE IF NOT EXISTS password_reset_tokens (
+      token_hash TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      expires_at TIMESTAMPTZ NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+  await sql`
     CREATE TABLE IF NOT EXISTS players (
       id TEXT PRIMARY KEY,
       user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -36,6 +44,38 @@ export async function ensureUsersTable() {
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
   `;
+  await sql`
+    CREATE TABLE IF NOT EXISTS game_activations (
+      user_id TEXT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+      activation_key TEXT NOT NULL UNIQUE,
+      activated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+}
+
+export async function activateGameAccount(input: {
+  email: string;
+  activationKey: string;
+}) {
+  await ensureUsersTable();
+  const sql = getDatabase();
+  const rows = await sql`
+    SELECT u.id
+    FROM users u
+    INNER JOIN players p ON p.user_id = u.id
+    WHERE LOWER(u.email) = LOWER(${input.email})
+      AND p.activation_key = ${input.activationKey}
+    LIMIT 1
+  `;
+
+  if (!rows[0]) return false;
+
+  await sql`
+    INSERT INTO game_activations (user_id, activation_key)
+    VALUES (${rows[0].id as string}, ${input.activationKey})
+    ON CONFLICT (user_id) DO NOTHING
+  `;
+  return true;
 }
 
 export async function getOrCreatePlayerActivationKey(input: {
@@ -114,4 +154,44 @@ export async function createPasswordUser(input: {
     RETURNING id, email, name, image
   `;
   return rows[0] as UserRecord;
+}
+
+export async function createPasswordResetToken(input: {
+  userId: string;
+  tokenHash: string;
+  expiresAt: Date;
+}) {
+  const sql = getDatabase();
+  await sql`
+    DELETE FROM password_reset_tokens
+    WHERE user_id = ${input.userId}
+  `;
+  await sql`
+    INSERT INTO password_reset_tokens (token_hash, user_id, expires_at)
+    VALUES (${input.tokenHash}, ${input.userId}, ${input.expiresAt.toISOString()})
+  `;
+}
+
+export async function resetPasswordWithToken(input: {
+  tokenHash: string;
+  passwordHash: string;
+}) {
+  await ensureUsersTable();
+  const sql = getDatabase();
+  const rows = await sql`
+    UPDATE users
+    SET password_hash = ${input.passwordHash}
+    WHERE id = (
+      SELECT user_id
+      FROM password_reset_tokens
+      WHERE token_hash = ${input.tokenHash}
+        AND expires_at > NOW()
+    )
+    RETURNING id
+  `;
+  await sql`
+    DELETE FROM password_reset_tokens
+    WHERE token_hash = ${input.tokenHash}
+  `;
+  return rows.length > 0;
 }
