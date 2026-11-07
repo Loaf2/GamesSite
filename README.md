@@ -25,8 +25,12 @@ STRIPE_SECRET_KEY=sk_test_...
 ```
 
 The Aim Trainer is sold through Stripe Checkout for €15.00. The Windows
-executable, Linux and macOS archives, and Android APK are kept outside `public` and are only
-served after the download route verifies that the Checkout Session is paid.
+executable, Linux and macOS archives, and Android APK are stored in a private
+Vercel Blob store (`games/` paths) and are only served after the download route
+verifies that the Checkout Session is paid. To upload or replace a build, run
+`vercel blob put "<file>" --access private --pathname "games/<name>" --allow-overwrite true`
+with the project's `BLOB_READ_WRITE_TOKEN`; the download route needs the same
+token in its environment.
 Use Stripe test mode and test card `4242 4242 4242 4242` while developing.
 After a paid checkout, the site generates and stores a unique activation key
 on the player's record in the Neon `players` table and displays it on the
