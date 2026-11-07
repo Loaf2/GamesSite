@@ -25,7 +25,7 @@ STRIPE_SECRET_KEY=sk_test_...
 ```
 
 The Aim Trainer is sold through Stripe Checkout for €15.00. The Windows
-executable and Linux and macOS archives are kept outside `public` and are only
+executable, Linux and macOS archives, and Android APK are kept outside `public` and are only
 served after the download route verifies that the Checkout Session is paid.
 Use Stripe test mode and test card `4242 4242 4242 4242` while developing.
 After a paid checkout, the site generates and stores a unique activation key

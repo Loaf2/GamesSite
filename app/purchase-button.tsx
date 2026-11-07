@@ -78,7 +78,7 @@ export default function PurchaseButton({
   return (
     <>
       <p className="mb-3 text-sm font-medium text-zinc-400">Choose your platform</p>
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {sessionId && isAuthenticated ? (
           <a
             href={`/api/download?session_id=${encodeURIComponent(sessionId)}&platform=windows`}
@@ -135,12 +135,28 @@ export default function PurchaseButton({
             Linux · Available after purchase
           </button>
         )}
+        {sessionId && isAuthenticated ? (
+          <a
+            href={`/api/download?session_id=${encodeURIComponent(sessionId)}&platform=android`}
+            className="block cursor-pointer rounded-xl border border-cyan-400/60 px-4 py-3 text-center text-sm font-semibold text-cyan-300 transition-colors hover:border-cyan-300 hover:text-cyan-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400"
+          >
+            Android (APK)
+          </a>
+        ) : (
+          <button
+            type="button"
+            disabled
+            className="cursor-not-allowed rounded-xl border border-zinc-700 bg-zinc-800/60 px-4 py-3 text-sm font-medium text-zinc-500"
+          >
+            Android · Available after purchase
+          </button>
+        )}
       </div>
 
       {sessionId && isAuthenticated && (
         <>
           <p className="mt-4 text-sm text-emerald-400">
-            Payment confirmed. Your Windows, macOS, and Linux downloads are ready.
+            Payment confirmed. Your Windows, macOS, Linux, and Android downloads are ready.
           </p>
           {!activationKey && !activationError && (
             <p className="mt-4 text-sm text-zinc-400">

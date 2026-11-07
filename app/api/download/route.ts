@@ -5,6 +5,7 @@ import { auth } from "@/auth";
 
 const GAME_PRICE_CENTS = 1500;
 const GAME_FILES = {
+  android: "AimTrainer.apk",
   linux: "AimTrainer-linux-x86_64.zip",
   macos: "AimTrainer-macos-x86_64.zip",
   windows: "Aim Trainer.exe",
