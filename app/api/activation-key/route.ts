@@ -36,7 +36,7 @@ export async function GET(request: Request) {
       checkoutSession.payment_status === "paid" &&
       checkoutSession.metadata?.product === "aim-trainer" &&
       checkoutSession.metadata?.user_id === userId &&
-      checkoutSession.amount_total === GAME_PRICE_CENTS &&
+      checkoutSession.amount_subtotal === GAME_PRICE_CENTS &&
       checkoutSession.currency === "eur";
 
     if (!isValidPurchase) {

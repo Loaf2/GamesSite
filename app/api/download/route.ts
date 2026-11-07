@@ -51,7 +51,7 @@ export async function GET(request: Request) {
     const isValidPurchase =
       session.payment_status === "paid" &&
       session.metadata?.product === "aim-trainer" &&
-      session.amount_total === GAME_PRICE_CENTS &&
+      session.amount_subtotal === GAME_PRICE_CENTS &&
       session.currency === "eur";
 
     if (!isValidPurchase) {

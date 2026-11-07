@@ -17,7 +17,7 @@ async function hasPaidGameSession(request: Request) {
   return (
     session.payment_status === "paid" &&
     session.metadata?.product === "aim-trainer" &&
-    session.amount_total === GAME_PRICE_CENTS &&
+    session.amount_subtotal === GAME_PRICE_CENTS &&
     session.currency === "eur"
   );
 }
