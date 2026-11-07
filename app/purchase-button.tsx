@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function PurchaseButton({
   isAuthenticated,
@@ -13,6 +13,42 @@ export default function PurchaseButton({
 }) {
   const [isStartingCheckout, setIsStartingCheckout] = useState(false);
   const [error, setError] = useState("");
+  const [activationKey, setActivationKey] = useState("");
+  const [activationError, setActivationError] = useState("");
+
+  useEffect(() => {
+    if (!sessionId || !isAuthenticated) return;
+
+    const paidSessionId = sessionId;
+    const controller = new AbortController();
+
+    async function loadActivationKey() {
+      try {
+        const response = await fetch(
+          `/api/activation-key?session_id=${encodeURIComponent(paidSessionId)}`,
+          { cache: "no-store", signal: controller.signal },
+        );
+        const data: { activationKey?: string; error?: string } =
+          await response.json();
+
+        if (!response.ok || !data.activationKey) {
+          throw new Error(data.error ?? "The activation key could not be loaded.");
+        }
+
+        setActivationKey(data.activationKey);
+      } catch (keyError) {
+        if (controller.signal.aborted) return;
+        setActivationError(
+          keyError instanceof Error
+            ? keyError.message
+            : "The activation key could not be loaded.",
+        );
+      }
+    }
+
+    void loadActivationKey();
+    return () => controller.abort();
+  }, [isAuthenticated, sessionId]);
 
   async function handlePurchase() {
     setError("");
@@ -45,7 +81,7 @@ export default function PurchaseButton({
       <div className="grid gap-3 sm:grid-cols-3">
         {sessionId && isAuthenticated ? (
           <a
-            href={`/api/download?session_id=${encodeURIComponent(sessionId)}`}
+            href={`/api/download?session_id=${encodeURIComponent(sessionId)}&platform=windows`}
             className="block cursor-pointer rounded-xl bg-cyan-400 px-4 py-3 text-center text-sm font-semibold text-zinc-950 transition-colors hover:bg-cyan-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400"
           >
             Windows
@@ -67,26 +103,69 @@ export default function PurchaseButton({
             Sign in to buy
           </a>
         )}
-        <button
-          type="button"
-          disabled
-          className="cursor-not-allowed rounded-xl border border-zinc-700 bg-zinc-800/60 px-4 py-3 text-sm font-medium text-zinc-500"
-        >
-          macOS · Coming soon
-        </button>
-        <button
-          type="button"
-          disabled
-          className="cursor-not-allowed rounded-xl border border-zinc-700 bg-zinc-800/60 px-4 py-3 text-sm font-medium text-zinc-500"
-        >
-          Linux · Coming soon
-        </button>
+        {sessionId && isAuthenticated ? (
+          <a
+            href={`/api/download?session_id=${encodeURIComponent(sessionId)}&platform=macos`}
+            className="block cursor-pointer rounded-xl border border-cyan-400/60 px-4 py-3 text-center text-sm font-semibold text-cyan-300 transition-colors hover:border-cyan-300 hover:text-cyan-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400"
+          >
+            macOS
+          </a>
+        ) : (
+          <button
+            type="button"
+            disabled
+            className="cursor-not-allowed rounded-xl border border-zinc-700 bg-zinc-800/60 px-4 py-3 text-sm font-medium text-zinc-500"
+          >
+            macOS · Available after purchase
+          </button>
+        )}
+        {sessionId && isAuthenticated ? (
+          <a
+            href={`/api/download?session_id=${encodeURIComponent(sessionId)}&platform=linux`}
+            className="block cursor-pointer rounded-xl border border-cyan-400/60 px-4 py-3 text-center text-sm font-semibold text-cyan-300 transition-colors hover:border-cyan-300 hover:text-cyan-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400"
+          >
+            Linux
+          </a>
+        ) : (
+          <button
+            type="button"
+            disabled
+            className="cursor-not-allowed rounded-xl border border-zinc-700 bg-zinc-800/60 px-4 py-3 text-sm font-medium text-zinc-500"
+          >
+            Linux · Available after purchase
+          </button>
+        )}
       </div>
 
       {sessionId && isAuthenticated && (
-        <p className="mt-4 text-sm text-emerald-400">
-          Payment confirmed. Your Windows download is ready.
-        </p>
+        <>
+          <p className="mt-4 text-sm text-emerald-400">
+            Payment confirmed. Your Windows, macOS, and Linux downloads are ready.
+          </p>
+          {!activationKey && !activationError && (
+            <p className="mt-4 text-sm text-zinc-400">
+              Preparing your activation key...
+            </p>
+          )}
+          {activationKey && (
+            <div className="mt-5 rounded-xl border border-zinc-700 bg-zinc-950 p-4">
+              <p className="text-sm font-medium text-zinc-300">
+                Your product activation key
+              </p>
+              <code className="mt-2 block break-all text-lg font-semibold tracking-wider text-cyan-300">
+                {activationKey}
+              </code>
+              <p className="mt-2 text-xs text-zinc-500">
+                Keep this key safe; it is linked to your purchase.
+              </p>
+            </div>
+          )}
+          {activationError && (
+            <p role="alert" className="mt-4 text-sm text-red-400">
+              {activationError}
+            </p>
+          )}
+        </>
       )}
       {error && (
         <p role="alert" className="mt-4 text-sm text-red-400">

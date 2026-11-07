@@ -24,10 +24,14 @@ Create a `.env.local` file with your Stripe secret key before starting the app:
 STRIPE_SECRET_KEY=sk_test_...
 ```
 
-The Aim Trainer is sold through Stripe Checkout for €15.00. The executable is
-kept outside `public` and is only served after the download route verifies that
-the Checkout Session is paid. Use Stripe test mode and test card
-`4242 4242 4242 4242` while developing.
+The Aim Trainer is sold through Stripe Checkout for €15.00. The Windows
+executable and Linux and macOS archives are kept outside `public` and are only
+served after the download route verifies that the Checkout Session is paid.
+Use Stripe test mode and test card `4242 4242 4242 4242` while developing.
+After a paid checkout, the site generates and stores a unique activation key
+on the player's record in the Neon `players` table and displays it on the
+checkout page. The game must implement its own key validation to enforce
+activation.
 
 ## Authentication
 

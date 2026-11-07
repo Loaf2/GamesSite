@@ -4,7 +4,11 @@ import Stripe from "stripe";
 import { auth } from "@/auth";
 
 const GAME_PRICE_CENTS = 1500;
-const GAME_FILE_NAME = "Aim Trainer.exe";
+const GAME_FILES = {
+  linux: "AimTrainer-linux-x86_64.zip",
+  macos: "AimTrainer-macos-x86_64.zip",
+  windows: "Aim Trainer.exe",
+} as const;
 
 export async function GET(request: Request) {
   const session = await auth();
@@ -12,10 +16,16 @@ export async function GET(request: Request) {
     return Response.json({ error: "Sign in before downloading." }, { status: 401 });
   }
 
-  const sessionId = new URL(request.url).searchParams.get("session_id");
+  const searchParams = new URL(request.url).searchParams;
+  const sessionId = searchParams.get("session_id");
+  const platform = searchParams.get("platform") ?? "windows";
+  const gameFileName =
+    platform in GAME_FILES
+      ? GAME_FILES[platform as keyof typeof GAME_FILES]
+      : undefined;
   const secretKey = process.env.STRIPE_SECRET_KEY;
 
-  if (!sessionId || !secretKey) {
+  if (!sessionId || !secretKey || !gameFileName) {
     return Response.json({ error: "A paid checkout is required." }, { status: 403 });
   }
 
@@ -32,10 +42,10 @@ export async function GET(request: Request) {
       return Response.json({ error: "A paid checkout is required." }, { status: 403 });
     }
 
-    const game = await readFile(path.join(process.cwd(), "private", GAME_FILE_NAME));
+    const game = await readFile(path.join(process.cwd(), "private", gameFileName));
     return new Response(new Uint8Array(game), {
       headers: {
-        "Content-Disposition": `attachment; filename="${GAME_FILE_NAME}"`,
+        "Content-Disposition": `attachment; filename="${gameFileName}"`,
         "Content-Type": "application/octet-stream",
         "Content-Length": String(game.byteLength),
         "Cache-Control": "private, no-store",

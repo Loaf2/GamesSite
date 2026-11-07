@@ -27,6 +27,43 @@ export async function ensureUsersTable() {
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
   `;
+  await sql`
+    CREATE TABLE IF NOT EXISTS players (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      checkout_session_id TEXT NOT NULL UNIQUE,
+      activation_key TEXT NOT NULL UNIQUE,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+}
+
+export async function getOrCreatePlayerActivationKey(input: {
+  checkoutSessionId: string;
+  userId: string;
+  activationKey: string;
+}) {
+  await ensureUsersTable();
+  const sql = getDatabase();
+  const inserted = await sql`
+    INSERT INTO players (id, user_id, checkout_session_id, activation_key)
+    VALUES (${crypto.randomUUID()}, ${input.userId}, ${input.checkoutSessionId}, ${input.activationKey})
+    ON CONFLICT (checkout_session_id) DO NOTHING
+    RETURNING activation_key
+  `;
+
+  if (inserted[0]) {
+    return inserted[0].activation_key as string;
+  }
+
+  const existing = await sql`
+    SELECT activation_key
+    FROM players
+    WHERE checkout_session_id = ${input.checkoutSessionId}
+      AND user_id = ${input.userId}
+    LIMIT 1
+  `;
+  return existing[0]?.activation_key as string | undefined;
 }
 
 export async function findUserByEmail(email: string) {
