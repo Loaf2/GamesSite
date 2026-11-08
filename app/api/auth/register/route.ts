@@ -1,5 +1,6 @@
 import { hash } from "bcryptjs";
 import { createPasswordUser } from "@/lib/db";
+import { createGameSessionToken } from "@/lib/game-token";
 
 export async function POST(request: Request) {
   try {
@@ -20,12 +21,12 @@ export async function POST(request: Request) {
       );
     }
 
-    await createPasswordUser({
+    const user = await createPasswordUser({
       email,
       name,
       passwordHash: await hash(password, 12),
     });
-    return Response.json({ created: true });
+    return Response.json({ created: true, sessionToken: createGameSessionToken(user.id) });
   } catch (error) {
     if (
       error instanceof Error &&
