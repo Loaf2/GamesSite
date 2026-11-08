@@ -21,7 +21,7 @@ const GAME_FILES = {
   },
   windows: {
     blobPath: "games/aim-trainer-windows.exe",
-    fileName: "Aim Trainer.exe",
+    fileName: "AimTrainer.exe",
     contentType: "application/octet-stream",
   },
 } as const;
