@@ -1,7 +1,8 @@
-import { randomBytes } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 import Stripe from "stripe";
 import { auth } from "@/auth";
 import { getOrCreatePlayerActivationKey } from "@/lib/db";
+import { isOwnerEmail } from "@/app/lib/owner";
 
 const GAME_PRICE_CENTS = 1500;
 
@@ -16,11 +17,27 @@ function generateActivationKey() {
   return `AIM-${groups.join("-")}`;
 }
 
+function ownerActivationKey(userId: string) {
+  const digest = createHash("sha256")
+    .update(`owner:${userId}:${process.env.AUTH_SECRET ?? ""}`)
+    .digest("hex")
+    .toUpperCase();
+  const groups = digest.slice(0, 16).match(/.{4}/g) ?? [];
+  return `AIM-${groups.join("-")}`;
+}
+
 export async function GET(request: Request) {
   const authSession = await auth();
   const userId = authSession?.user?.id;
   if (!userId) {
     return Response.json({ error: "Sign in to view your activation key." }, { status: 401 });
+  }
+
+  if (isOwnerEmail(authSession?.user?.email)) {
+    return Response.json(
+      { activationKey: ownerActivationKey(userId) },
+      { headers: { "Cache-Control": "private, no-store" } },
+    );
   }
 
   const checkoutSessionId = new URL(request.url).searchParams.get("session_id");

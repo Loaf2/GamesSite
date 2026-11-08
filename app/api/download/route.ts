@@ -1,6 +1,7 @@
 import { get } from "@vercel/blob";
 import Stripe from "stripe";
 import { auth } from "@/auth";
+import { isOwnerEmail } from "@/app/lib/owner";
 
 const GAME_PRICE_CENTS = 1500;
 const GAME_FILES = {
@@ -26,6 +27,24 @@ const GAME_FILES = {
   },
 } as const;
 
+async function serveBlobFile(gameFile: (typeof GAME_FILES)[keyof typeof GAME_FILES]) {
+  const game = await get(gameFile.blobPath, { access: "private" });
+  if (!game || game.statusCode !== 200) {
+    return Response.json(
+      { error: "The download could not be prepared. Please try again." },
+      { status: 404 },
+    );
+  }
+
+  return new Response(game.stream, {
+    headers: {
+      "Content-Disposition": `attachment; filename="${gameFile.fileName}"`,
+      "Content-Type": gameFile.contentType,
+      "Cache-Control": "private, no-store",
+    },
+  });
+}
+
 export async function GET(request: Request) {
   const session = await auth();
   if (!session?.user) {
@@ -41,7 +60,15 @@ export async function GET(request: Request) {
       : undefined;
   const secretKey = process.env.STRIPE_SECRET_KEY;
 
-  if (!sessionId || !secretKey || !gameFile) {
+  if (!gameFile) {
+    return Response.json({ error: "A paid checkout is required." }, { status: 403 });
+  }
+
+  if (isOwnerEmail(session.user.email)) {
+    return serveBlobFile(gameFile);
+  }
+
+  if (!sessionId || !secretKey) {
     return Response.json({ error: "A paid checkout is required." }, { status: 403 });
   }
 
@@ -58,21 +85,7 @@ export async function GET(request: Request) {
       return Response.json({ error: "A paid checkout is required." }, { status: 403 });
     }
 
-    const game = await get(gameFile.blobPath, { access: "private" });
-    if (!game || game.statusCode !== 200) {
-      return Response.json(
-        { error: "The download could not be prepared. Please try again." },
-        { status: 404 },
-      );
-    }
-
-    return new Response(game.stream, {
-      headers: {
-        "Content-Disposition": `attachment; filename="${gameFile.fileName}"`,
-        "Content-Type": gameFile.contentType,
-        "Cache-Control": "private, no-store",
-      },
-    });
+    return serveBlobFile(gameFile);
   } catch (error) {
     console.error("Could not verify Stripe purchase or serve game", error);
     return Response.json(
