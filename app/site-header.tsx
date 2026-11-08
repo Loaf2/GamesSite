@@ -13,7 +13,7 @@ export default function SiteHeader() {
           href="/"
           className="cursor-pointer font-semibold tracking-tight text-white"
         >
-          Aim Trainer
+          Waydens Aim Trainer
         </Link>
         <div className="flex items-center gap-3 text-sm text-zinc-300 sm:gap-6">
           <a className="hidden cursor-pointer transition-colors hover:text-white sm:inline" href="#preview">

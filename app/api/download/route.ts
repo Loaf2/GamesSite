@@ -6,22 +6,22 @@ const GAME_PRICE_CENTS = 1500;
 const GAME_FILES = {
   android: {
     blobPath: "games/aim-trainer-android.apk",
-    fileName: "AimTrainer.apk",
+    fileName: "Waydens Aim Trainer.apk",
     contentType: "application/vnd.android.package-archive",
   },
   linux: {
     blobPath: "games/aim-trainer-linux.zip",
-    fileName: "AimTrainer-linux-x86_64.zip",
+    fileName: "Waydens Aim Trainer-linux-x86_64.zip",
     contentType: "application/zip",
   },
   macos: {
     blobPath: "games/aim-trainer-macos.zip",
-    fileName: "AimTrainer-macos-x86_64.zip",
+    fileName: "Waydens Aim Trainer-macos-x86_64.zip",
     contentType: "application/zip",
   },
   windows: {
-    blobPath: "games/aim-trainer-windows.exe",
-    fileName: "AimTrainer.exe",
+    blobPath: "games/waydens-aim-trainer-windows.exe",
+    fileName: "Waydens Aim Trainer.exe",
     contentType: "application/octet-stream",
   },
 } as const;

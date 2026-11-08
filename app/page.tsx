@@ -32,14 +32,14 @@ export default async function Home({
           <div className="relative z-10 mx-auto w-full max-w-6xl">
             <div className="max-w-xl">
               <p className="mb-3 text-sm font-medium uppercase tracking-[0.2em] text-cyan-300">
-                Aim Trainer
+                Waydens Aim Trainer
               </p>
               <h1 className="text-5xl font-semibold tracking-tight sm:text-7xl">
                 Sharpen your aim.
               </h1>
               <p className="mt-5 max-w-lg leading-7 text-zinc-200">
                 Watch the preview, then sign in to securely buy and download
-                the desktop Aim Trainer.
+                the desktop Waydens Aim Trainer.
               </p>
               <a
                 className="mt-8 inline-block cursor-pointer rounded-xl bg-cyan-400 px-6 py-3 font-semibold text-zinc-950 transition-colors hover:bg-cyan-300"
@@ -62,7 +62,7 @@ export default async function Home({
               Own the full game.
             </h2>
             <p className="mt-4 leading-7 text-zinc-400">
-              Buy the desktop Aim Trainer once, then download your copy
+              Buy the desktop Waydens Aim Trainer once
               securely after Stripe confirms payment.
             </p>
             <div className="my-8 flex items-center justify-between border-y border-zinc-800 py-5">

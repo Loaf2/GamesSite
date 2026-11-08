@@ -28,7 +28,7 @@ export async function POST(request: Request) {
           price_data: {
             currency: "eur",
             product_data: {
-              name: "Aim Trainer",
+              name: "Waydens Aim Trainer",
               tax_code: "txcd_10201000",
             },
             unit_amount: GAME_PRICE_CENTS,
