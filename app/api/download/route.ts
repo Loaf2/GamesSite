@@ -5,17 +5,17 @@ import { auth } from "@/auth";
 const GAME_PRICE_CENTS = 1500;
 const GAME_FILES = {
   android: {
-    blobPath: "games/aim-trainer-android.apk",
+    blobPath: "games/waydens-aim-trainer-android.apk",
     fileName: "Waydens Aim Trainer.apk",
     contentType: "application/vnd.android.package-archive",
   },
   linux: {
-    blobPath: "games/aim-trainer-linux.zip",
+    blobPath: "games/waydens-aim-trainer-linux.zip",
     fileName: "Waydens Aim Trainer-linux-x86_64.zip",
     contentType: "application/zip",
   },
   macos: {
-    blobPath: "games/aim-trainer-macos.zip",
+    blobPath: "games/waydens-aim-trainer-macos.zip",
     fileName: "Waydens Aim Trainer-macos-x86_64.zip",
     contentType: "application/zip",
   },
