@@ -59,13 +59,15 @@ export async function getBestRankScores(userId: string) {
   await ensureUsersTable();
   const sql = getDatabase();
   const rows = await sql`
-    SELECT aim_best_score, two_balls_best_score, six_balls_best_score
-    FROM user_ranks
-    WHERE user_id = ${userId}
+    SELECT u.name AS account_name, r.aim_best_score, r.two_balls_best_score, r.six_balls_best_score
+    FROM users u
+    LEFT JOIN user_ranks r ON r.user_id = u.id
+    WHERE u.id = ${userId}
     LIMIT 1
   `;
   const row = rows[0];
   return {
+    accountName: typeof row?.account_name === "string" ? row.account_name : "",
     aimBestScore: Number(row?.aim_best_score ?? 0),
     twoBallsBestScore: Number(row?.two_balls_best_score ?? 0),
     sixBallsBestScore: Number(row?.six_balls_best_score ?? 0),
