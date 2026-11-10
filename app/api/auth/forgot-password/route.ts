@@ -61,7 +61,7 @@ async function sendResetEmail(input: { email: string; resetUrl: string }) {
     body: JSON.stringify({
       from,
       to: [input.email],
-      subject: "Reset your Aim Trainer password",
+      subject: "Reset your Waydens Aim Trainer password",
       text: `Reset your password using this link (valid for one hour): ${input.resetUrl}`,
     }),
   });

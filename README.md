@@ -24,7 +24,7 @@ Create a `.env.local` file with your Stripe secret key before starting the app:
 STRIPE_SECRET_KEY=sk_test_...
 ```
 
-The Aim Trainer is sold through Stripe Checkout for €15.00. The Windows
+Waydens Aim Trainer is sold
 executable, Linux and macOS archives, and Android APK are stored in a private
 Vercel Blob store (`games/` paths) and are only served after the download route
 verifies that the Checkout Session is paid. To upload or replace a build, run

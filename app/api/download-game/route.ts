@@ -3,6 +3,7 @@ import path from "path";
 import JSZip from "jszip";
 import Stripe from "stripe";
 import { auth } from "@/auth";
+import { isOwnerEmail } from "@/app/lib/owner";
 
 const GAME_DIR = path.join(process.cwd(), "public", "Game");
 const GAME_PRICE_CENTS = 1500;
@@ -41,7 +42,7 @@ export async function GET(request: Request) {
       return new Response("Sign in before downloading.", { status: 401 });
     }
 
-    if (!(await hasPaidGameSession(request))) {
+    if (!isOwnerEmail(session.user.email) && !(await hasPaidGameSession(request))) {
       return new Response("A paid checkout is required.", { status: 403 });
     }
 

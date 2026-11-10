@@ -321,11 +321,11 @@ function AuthCard({
           className="mb-8 inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-cyan-300 transition-colors hover:text-cyan-200"
           href="/"
         >
-          <span aria-hidden="true">←</span> Back to Aim Trainer
+          <span aria-hidden="true">←</span> Back to Waydens Aim Trainer
         </Link>
         <div className="mb-8">
           <p className="text-sm font-medium uppercase tracking-[0.2em] text-cyan-400">
-            Aim Trainer
+            Waydens Aim Trainer
           </p>
           <h1 className="mt-3 text-3xl font-semibold">{title}</h1>
         </div>
